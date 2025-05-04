@@ -1,19 +1,14 @@
-import { useNavigate } from "react-router";
-import Paper from "@mui/material/Paper";
-import FormControl from "@mui/material/FormControl";
-import InputAdornment from "@mui/material/InputAdornment";
-import TextField from "@mui/material/TextField";
-import SearchIcon from "@mui/icons-material/Search";
-import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
-import TablePagination from "@mui/material/TablePagination";
 import { ChangeEvent, MouseEvent, useState } from "react";
-import CardHeader from "@mui/material/CardHeader";
-import CardMedia from "@mui/material/CardMedia";
 import { useQuery } from "@tanstack/react-query";
+
+import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Grid";
+import TablePagination from "@mui/material/TablePagination";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useDebounce } from "../../hooks/useDebounce";
 import { Typography } from "@mui/material";
+
+import List, { Anime } from "./components/list";
+import SearchField from "./components/search-field";
 
 function Home() {
   const [page, setPage] = useState(1);
@@ -30,17 +25,8 @@ function Home() {
     },
   });
 
-  const { debounce } = useDebounce();
-  const handleQuerySearch = (event: ChangeEvent<HTMLInputElement>) => {
-    debounce(() => {
-      setQ(event.target.value);
-      setPage(1);
-      setRowsPerPage(10);
-    }, 500);
-  };
-
   const handleChangePage = (
-    event: MouseEvent<HTMLButtonElement> | null,
+    _event: MouseEvent<HTMLButtonElement> | null,
     newPage: number,
   ) => {
     setPage(newPage);
@@ -53,11 +39,6 @@ function Home() {
     setPage(1);
   };
 
-  const navigate = useNavigate();
-  const onClick = (id: string) => {
-    navigate(`/detail/${id}`);
-  };
-
   if (error) return "An error has occurred: " + error.message;
 
   return (
@@ -68,21 +49,11 @@ function Home() {
         p: 2,
       }}
     >
-      <FormControl fullWidth sx={{ mb: 2 }}>
-        <TextField
-          label="Search Anime Title"
-          onChange={handleQuerySearch}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            },
-          }}
-        />
-      </FormControl>
+      <SearchField
+        setQ={setQ}
+        setPage={setPage}
+        setRowsPerPage={setRowsPerPage}
+      />
 
       <Grid container spacing={2}>
         {isFetching ? (
@@ -91,37 +62,20 @@ function Home() {
           </Grid>
         ) : (
           <>
-            {data?.data.length === 0 && (
+            {data?.pagination.total === 0 && (
               <Typography>No anime found!</Typography>
             )}
 
-            {data?.data.length !== 0 &&
-              data?.data?.map((item) => {
+            {data?.pagination.total !== 0 &&
+              data?.data.map((item: Anime) => {
                 return (
-                  <Grid
+                  <List
                     key={item.mal_id}
-                    size={3}
-                    sx={{
-                      cursor: "pointer",
-                    }}
-                  >
-                    <Card
-                      variant="outlined"
-                      onClick={() => onClick(item.mal_id)}
-                    >
-                      <CardHeader
-                        title={item.title}
-                        subheader={item.title_japanese}
-                      />
-
-                      <CardMedia
-                        component="img"
-                        height="435"
-                        image={item.images.jpg.image_url}
-                        alt="Cowboy Bebop Poster"
-                      />
-                    </Card>
-                  </Grid>
+                    mal_id={item.mal_id}
+                    title={item.title}
+                    title_japanese={item.title_japanese}
+                    images={item.images}
+                  />
                 );
               })}
           </>

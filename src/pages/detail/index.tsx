@@ -29,7 +29,7 @@ function Detail() {
     <Stack>
       {isFetching ? (
         <Box sx={{ textAlign: "center", pt: 5 }}>
-          <CircularProgress sx={{}} />
+          <CircularProgress />
         </Box>
       ) : (
         <Card sx={{ display: "flex", flexDirection: "row" }}>
