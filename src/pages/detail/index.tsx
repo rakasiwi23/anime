@@ -57,7 +57,7 @@ function Detail() {
               component="div"
               sx={{ color: "text.secondary" }}
             >
-              {data?.data.studios[0].name}
+              {data?.data.producers[0].name}
             </Typography>
             <Typography sx={{ mt: 4 }}>{data?.data.synopsis}</Typography>
 
@@ -68,11 +68,11 @@ function Detail() {
               </Box>
               <Box display="flex" alignItems="center" gap={1}>
                 <Typography variant="body1">Ranked:</Typography>
-                <Chip color="info" label={data?.data.rank} />
+                <Chip color="info" label={data?.data.rank ?? "?"} />
               </Box>
               <Box display="flex" alignItems="center" gap={1}>
                 <Typography variant="body1">Score:</Typography>
-                <Chip color="info" label={data?.data.score} />
+                <Chip color="info" label={data?.data.score ?? "?"} />
               </Box>
             </Stack>
 

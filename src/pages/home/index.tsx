@@ -1,4 +1,4 @@
-import { ChangeEvent, MouseEvent, useState } from "react";
+import { ChangeEvent, MouseEvent, Suspense, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import Paper from "@mui/material/Paper";
